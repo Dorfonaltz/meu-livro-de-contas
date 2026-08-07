@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Livro de Contas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@400;500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<!-- Incluindo Chart.js para o Gráfico -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+  :root {
+    --paper: #1A1812;
+    --paper-line: #3C3627;
+    --ink: #EDE6D3;
+    --ink-soft: #9C927A;
+    --green: #7FC49A;
+    --green-bg: #1E2E24;
+    --red: #E08787;
+    --red-bg: #362222;
+    --gold: #DBAE5F;
+    --gold-bg: #3A2E18;
+    --card: #23201A;
+    --row-alt: #282419;
+    --row-hover: #2E2A1F;
+    --field-bg: #1F1C15;
+    --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.2);
+    --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.3);
+  }
+
+  body.light-theme {
+    --paper: #F8F7F4;
+    --paper-line: #E8E3D9;
+    --ink: #2C2820;
+    --ink-soft: #8C8577;
+    --green: #377E55;
+    --green-bg: #E3F0E8;
+    --red: #C54C4C;
+    --red-bg: #FBEAEA;
+    --gold: #A8791F;
+    --gold-bg: #F9F1E1;
+    --card: #FFFFFF;
+    --row-alt: #F8F6F0;
+    --row-hover: #F0EBE1;
+    --field-bg: #FFFFFF;
+    --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.04);
+    --shadow-md: 0 12px 32px rgba(0, 0, 0, 0.08);
+  }
+
+  * { box-sizing: border-box; }
+  
+  body {
+    background-color: var(--paper);
+    background-image: linear-gradient(to bottom, var(--row-alt) 0%, var(--paper) 500px);
+    background-attachment: fixed;
+    color: var(--ink);
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+    padding: 40px 20px 80px;
+    transition: background-color 0.4s ease, color 0.4s ease;
+  }
+  
+  .wrap { 
+    max-width: 920px; 
+    margin: 0 auto; 
+    animation: fadeIn 0.6s ease-out;
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  header {
+    display: flex; justify-content: space-between; align-items: flex-end;
+    padding-bottom: 24px; margin-bottom: 32px;
+    gap: 16px; flex-wrap: wrap;
+  }
+  h1 { font-family: 'Fraunces', serif; font-weight: 700; font-size: 34px; margin: 0; letter-spacing: -0.02em; }
+  .subtitle { color: var(--ink-soft); font-size: 14px; margin-top: 6px; font-weight: 500; }
+  
+  select#monthSelect {
+    font-family: 'IBM Plex Mono', monospace; background: var(--card); border: 1.5px solid var(--paper-line);
+    border-radius: 10px; padding: 10px 14px; font-size: 14px; color: var(--ink); font-weight: 500;
+    box-shadow: var(--shadow-sm); cursor: pointer; transition: all 0.2s ease;
+  }
+  select#monthSelect:hover { border-color: var(--gold); }
+
+  .tabs { display: flex; gap: 8px; margin-bottom: 28px; border-bottom: 2px solid var(--paper-line); padding-bottom: 4px;}
+  .tab-btn {
+    background: transparent; color: var(--ink-soft); border-radius: 8px; padding: 10px 16px;
+    font-size: 15px; font-family: 'Fraunces', serif; font-weight: 600;
+    border: none; cursor: pointer; transition: all 0.3s ease;
+    position: relative;
+  }
+  .tab-btn::after {
+    content: ''; position: absolute; bottom: -6px; left: 0; right: 0; height: 3px;
+    border-radius: 3px 3px 0 0; background: var(--red); transform: scaleX(0); transition: transform 0.3s ease;
+  }
+  .tab-btn.active { color: var(--ink); }
+  .tab-btn.active::after { transform: scaleX(1); }
+  .tab-btn:hover:not(.active) { color: var(--ink); background: var(--row-hover); }
+  .tab-panel { display: none; animation: fadeIn 0.4s ease; }
+  .tab-panel.active { display: block; }
+
+  .summary { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 36px; }
+  @media (max-width: 640px) { .summary { grid-template-columns: repeat(2, 1fr); } }
+  .card { 
+    background: var(--card); border: 1px solid var(--paper-line); border-radius: 16px; 
+    padding: 20px; transition: all 0.3s ease; box-shadow: var(--shadow-sm);
+  }
+  .card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); border-color: var(--gold-bg); }
+  .card .label { font-size: 12px; color: var(--ink-soft); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 10px; font-weight: 600; }
+  .card .value { font-family: 'IBM Plex Mono', monospace; font-size: 24px; font-weight: 500; }
+  .card.green .value { color: var(--green); }
+  .card.red .value { color: var(--red); }
+  .card.gold .value { color: var(--gold); }
+
+  form {
+    background: var(--card); border: 1px solid var(--paper-line); border-radius: 16px; padding: 24px;
+    margin-bottom: 32px; display: grid; grid-template-columns: 1.4fr 1fr 1fr 0.9fr 1.1fr auto; gap: 14px; align-items: end;
+    box-shadow: var(--shadow-sm); transition: all 0.3s ease;
+  }
+  @media (max-width: 780px) { form { grid-template-columns: 1fr 1fr; } }
+  form label { font-size: 11px; color: var(--ink-soft); text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 6px; font-weight: 600;}
+  form input, form select {
+    width: 100%; font-family: 'Inter', sans-serif; font-size: 14px; padding: 12px 14px;
+    border: 1.5px solid var(--paper-line); border-radius: 10px; background: var(--field-bg); color: var(--ink); 
+    transition: all 0.2s ease; font-weight: 500;
+  }
+  form input:focus, form select:focus, select#monthSelect:focus { 
+    outline: none; border-color: var(--gold); box-shadow: 0 0 0 4px var(--gold-bg); 
+  }
+  .field-error { border-color: var(--red) !important; box-shadow: 0 0 0 4px var(--red-bg) !important;}
+  button { font-family: 'Inter', sans-serif; font-weight: 600; font-size: 14px; cursor: pointer; border-radius: 10px; border: none; padding: 12px 20px; transition: all 0.2s ease; }
+  form button { background: var(--ink); color: var(--paper); height: 45px; text-transform: uppercase; letter-spacing: 0.05em; font-size: 13px;}
+  form button:hover { opacity: 0.9; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+  form button:active { transform: translateY(0); }
+
+  .ledger { background: var(--card); border: 1px solid var(--paper-line); border-radius: 16px; overflow: hidden; border-left: 4px solid var(--red); box-shadow: var(--shadow-sm); transition: all 0.3s ease;}
+  .ledger:hover { box-shadow: var(--shadow-md); }
+  table { width: 100%; border-collapse: collapse; }
+  thead th { text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; color: var(--ink-soft); padding: 16px 20px; border-bottom: 2px solid var(--paper-line); background: rgba(0,0,0,0.02); }
+  tbody td { padding: 14px 20px; font-size: 14px; border-bottom: 1px solid var(--paper-line); font-weight: 500;}
+  tbody tr { transition: background 0.2s ease; }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:nth-child(even) { background: var(--row-alt); }
+  tbody tr:hover { background: var(--row-hover); }
+  td.num { font-family: 'IBM Plex Mono', monospace; text-align: right; white-space: nowrap; font-size: 15px;}
+  td.entrada { color: var(--green); }
+  td.saida { color: var(--red); }
+  td.cat span { background: var(--gold-bg); color: var(--gold); font-size: 12px; padding: 4px 10px; border-radius: 12px; font-weight: 600; }
+  td.del { text-align: center; }
+  td.del button { background: transparent; color: var(--ink-soft); padding: 6px 10px; font-size: 13px; font-weight: 500; border-radius: 8px;}
+  td.del button:hover { color: var(--red); background: var(--red-bg); }
+  .empty, .loading { padding: 60px 20px; text-align: center; color: var(--ink-soft); font-size: 15px; font-style: italic;}
+
+  .chart-container {
+    background: var(--card); border: 1px solid var(--paper-line); border-radius: 16px; padding: 24px; margin-bottom: 32px; display: none; transition: all 0.3s ease; box-shadow: var(--shadow-sm);
+  }
+  .chart-container:hover { box-shadow: var(--shadow-md); }
+  .chart-container h3 { margin-top: 0; font-size: 13px; font-weight: 600; color: var(--ink-soft); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 20px; }
+
+  .quick-templates { margin-bottom: 16px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .qt-label { font-size: 12px; font-weight: 600; color: var(--ink-soft); text-transform: uppercase; letter-spacing: 0.05em; }
+  .qt-list { display: flex; gap: 10px; flex-wrap: wrap; }
+  .quick-btn {
+    background: var(--card); color: var(--ink); border: 1px solid var(--paper-line);
+    padding: 8px 14px; border-radius: 20px; font-size: 13px; font-weight: 600;
+    cursor: pointer; transition: all 0.2s ease; box-shadow: var(--shadow-sm);
+  }
+  .quick-btn:hover { background: var(--field-bg); transform: translateY(-2px); border-color: var(--gold); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+
+  .wishform { display: grid; grid-template-columns: 1.6fr 1fr 1fr auto; gap: 14px; align-items: end; }
+  @media (max-width: 780px) { .wishform { grid-template-columns: 1fr 1fr; } }
+  .wishlist { display: flex; flex-direction: column; gap: 12px; }
+  .wish-item { background: var(--card); border: 1px solid var(--paper-line); border-radius: 14px; padding: 16px 20px; display: flex; align-items: center; gap: 16px; transition: all 0.3s ease; box-shadow: var(--shadow-sm); }
+  .wish-item:hover { transform: translateX(4px); box-shadow: var(--shadow-md); border-color: var(--gold-bg); }
+  .wish-item.comprado { opacity: 0.6; background: var(--row-alt); box-shadow: none;}
+  .wish-item.comprado:hover { transform: none; border-color: var(--paper-line);}
+  .wish-item.comprado .wish-nome { text-decoration: line-through; color: var(--ink-soft); }
+  .wish-check { width: 22px; height: 22px; flex-shrink: 0; accent-color: var(--green); cursor: pointer; border-radius: 6px;}
+  .wish-info { flex: 1; min-width: 0; }
+  .wish-nome { font-size: 15px; font-weight: 500;}
+  .wish-meta { display: flex; gap: 8px; margin-top: 6px; align-items: center; }
+  .wish-prioridade { font-size: 11px; padding: 3px 10px; border-radius: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em;}
+  .wish-prioridade.alta { background: var(--red-bg); color: var(--red); }
+  .wish-prioridade.media { background: var(--gold-bg); color: var(--gold); }
+  .wish-prioridade.baixa { background: var(--green-bg); color: var(--green); }
+  .wish-valor { font-family: 'IBM Plex Mono', monospace; font-size: 16px; font-weight: 500; color: var(--gold); white-space: nowrap; }
+  .wish-item .del button { background: transparent; color: var(--ink-soft); padding: 6px 10px; font-size: 13px; font-weight: 500; border-radius: 8px;}
+  .wish-item .del button:hover { color: var(--red); background: var(--red-bg); }
+  .wish-total { margin-top: 24px; font-size: 14px; color: var(--ink-soft); font-weight: 500; text-align: right; padding-right: 10px;}
+  .wish-total span { color: var(--gold); font-family: 'IBM Plex Mono', monospace; font-size: 20px; font-weight: 600; margin-left: 8px;}
+
+  .icon-btn {
+    background: var(--card); border: 1px solid var(--paper-line); color: var(--ink);
+    border-radius: 10px; width: 42px; height: 42px; display: flex; align-items: center; 
+    justify-content: center; cursor: pointer; font-size: 18px; transition: all 0.2s ease;
+    box-shadow: var(--shadow-sm);
+  }
+  .icon-btn:hover { background: var(--field-bg); transform: translateY(-2px); border-color: var(--gold); }
+  
+  .toast-container { position: fixed; bottom: 32px; right: 32px; display: flex; flex-direction: column; gap: 12px; z-index: 9999; }
+  .toast {
+    background: var(--ink); color: var(--paper); padding: 14px 24px; border-radius: 12px;
+    font-size: 14px; font-weight: 600; box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    transition: all 0.3s ease; animation: slideIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  }
+  @keyframes slideIn { from { transform: translateX(120%) scale(0.9); opacity: 0; } to { transform: translateX(0) scale(1); opacity: 1; } }
+
+  .modal-overlay {
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px);
+    display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: all 0.3s ease; z-index: 10000;
+  }
+  .modal-overlay.active { opacity: 1; pointer-events: auto; }
+  .modal-content {
+    background: var(--card); border: 1px solid var(--paper-line); border-radius: 20px; padding: 32px;
+    max-width: 360px; width: 90%; text-align: center; box-shadow: var(--shadow-md); 
+    transform: scale(0.9) translateY(20px); transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+  .modal-overlay.active .modal-content { transform: scale(1) translateY(0); }
+  .modal-content h4 { margin: 0 0 16px; font-size: 22px; font-family: 'Fraunces', serif; font-weight: 600; color: var(--ink); }
+  .modal-content p { margin: 0 0 32px; font-size: 15px; color: var(--ink-soft); line-height: 1.5; }
+  .modal-actions { display: flex; gap: 12px; }
+  .modal-actions button { flex: 1; height: 44px; text-transform: uppercase; letter-spacing: 0.05em; font-size: 13px; font-weight: 600;}
+  .btn-cancel { background: var(--field-bg); color: var(--ink); border: 1.5px solid var(--paper-line); }
+  .btn-cancel:hover { background: var(--paper-line); transform: translateY(-1px);}
+  .btn-confirm { background: var(--red); color: #fff; box-shadow: 0 4px 12px rgba(224, 135, 135, 0.3); }
+  .btn-confirm:hover { background: #c25252; transform: translateY(-1px); box-shadow: 0 6px 16px rgba(224, 135, 135, 0.4);}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div>
+      <h1>Livro de contas</h1>
+      <div class="subtitle">Controle de entradas e saídas</div>
+    </div>
+    <div style="display: flex; gap: 12px; align-items: center;">
+      <button id="themeToggle" class="icon-btn" aria-label="Alternar tema">☀️</button>
+      <select id="monthSelect"></select>
+    </div>
+  </header>
+
+  <div class="tabs">
+    <button class="tab-btn active" id="tabBtnLancamentos" onclick="switchTab('lancamentos')">Lançamentos</button>
+    <button class="tab-btn" id="tabBtnCompras" onclick="switchTab('compras')">Coisas que quero comprar</button>
+  </div>
+
+  <div class="tab-panel active" id="tabLancamentos">
+    <div class="summary">
+      <div class="card green"><div class="label">Entradas</div><div class="value" id="totalEntradas">R$ 0,00</div></div>
+      <div class="card red"><div class="label">Saídas</div><div class="value" id="totalSaidas">R$ 0,00</div></div>
+      <div class="card gold"><div class="label">Saldo do mês</div><div class="value" id="saldoMes">R$ 0,00</div></div>
+      <div class="card"><div class="label">Saldo acumulado</div><div class="value" id="saldoTotal">R$ 0,00</div></div>
+    </div>
+
+    <!-- Container do Gráfico (Oculto por padrão, ativado via JS se houver dados) -->
+    <div class="chart-container" id="chartWrapper">
+      <h3>Despesas por Categoria</h3>
+      <canvas id="graficoCategorias" height="80"></canvas>
+    </div>
+
+    <div class="quick-templates">
+      <span class="qt-label">Templates:</span>
+      <div id="quickTemplatesList" class="qt-list"></div>
+    </div>
+
+    <form id="entryForm">
+      <div><label>Descrição</label><input type="text" id="fDesc" placeholder="Salário, aluguel, mercado..."></div>
+      <div><label>Data</label><input type="date" id="fData"></div>
+      <div><label>Valor (R$)</label><input type="text" inputmode="decimal" id="fValor" placeholder="0,00"></div>
+      <div><label>Tipo</label>
+        <select id="fTipo">
+          <option value="entrada">Entrada</option>
+          <option value="saida">Saída</option>
+        </select>
+      </div>
+      <div><label>Categoria</label>
+        <select id="fCategoria">
+          <option>Salário</option><option>Alimentação</option><option>Transporte</option><option>Moradia</option>
+          <option>Lazer</option><option>Contas fixas</option><option>Investimento</option><option>Saúde</option><option>Outros</option>
+        </select>
+      </div>
+      <button type="submit">Adicionar</button>
+    </form>
+
+    <div class="ledger">
+      <table>
+        <thead><tr><th>Data</th><th>Descrição</th><th>Categoria</th><th style="text-align:right;">Valor</th><th></th></tr></thead>
+        <tbody id="tbody"><tr><td colspan="5" class="loading">Carregando...</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="tab-panel" id="tabCompras">
+    <form class="wishform" id="wishForm" style="background: var(--card); border: 1px solid var(--paper-line); border-radius: 10px; padding: 18px 20px; margin-bottom: 28px;">
+      <div><label>Item</label><input type="text" id="wNome" placeholder="Tênis, celular, livro..."></div>
+      <div><label>Valor estimado (R$)</label><input type="text" inputmode="decimal" id="wValor" placeholder="0,00"></div>
+      <div><label>Prioridade</label>
+        <select id="wPrioridade"><option value="media">Média</option><option value="alta">Alta</option><option value="baixa">Baixa</option></select>
+      </div>
+      <button type="submit">Adicionar</button>
+    </form>
+    <div class="wishlist" id="wishlistContainer"></div>
+    <div class="wish-total" id="wishTotal"></div>
+  </div>
+</div>
+
+<!-- Modais e Notificações -->
+<div id="toastContainer" class="toast-container"></div>
+<div id="confirmModal" class="modal-overlay">
+  <div class="modal-content">
+    <h4>Confirmação</h4>
+    <p id="modalMessage">Tem certeza que deseja remover?</p>
+    <div class="modal-actions">
+      <button id="modalBtnCancel" class="btn-cancel">Cancelar</button>
+      <button id="modalBtnConfirm" class="btn-confirm">Remover</button>
+    </div>
+  </div>
+</div>
+
+<script>
+let entries = [];
+let wishlist = [];
+let currentMonth = new Date().toISOString().slice(0,7);
+let meuGrafico; 
+
+// --- UI/UX: Tema Claro/Escuro ---
+const themeBtn = document.getElementById('themeToggle');
+let isLight = localStorage.getItem('controle-financeiro:theme') === 'light';
+if (isLight) document.body.classList.add('light-theme');
+
+function updateThemeIcon() { themeBtn.textContent = isLight ? '🌙' : '☀️'; }
+updateThemeIcon();
+
+themeBtn.addEventListener('click', () => {
+  document.body.classList.toggle('light-theme');
+  isLight = !isLight;
+  localStorage.setItem('controle-financeiro:theme', isLight ? 'light' : 'dark');
+  updateThemeIcon();
+  render(); // Re-renderiza para atualizar as cores do gráfico
+});
+
+// --- UI/UX: Notificações (Toast) ---
+function showToast(msg) {
+  const toast = document.createElement('div');
+  toast.className = 'toast';
+  toast.textContent = msg;
+  document.getElementById('toastContainer').appendChild(toast);
+  setTimeout(() => {
+    toast.style.opacity = '0';
+    setTimeout(() => toast.remove(), 300);
+  }, 3000);
+}
+
+// --- UI/UX: Modal de Confirmação ---
+let modalCallback = null;
+function confirmAction(msg, callback) {
+  document.getElementById('modalMessage').textContent = msg;
+  document.getElementById('confirmModal').classList.add('active');
+  modalCallback = callback;
+}
+document.getElementById('modalBtnCancel').addEventListener('click', () => {
+  document.getElementById('confirmModal').classList.remove('active');
+  modalCallback = null;
+});
+document.getElementById('modalBtnConfirm').addEventListener('click', () => {
+  if (modalCallback) modalCallback();
+  document.getElementById('confirmModal').classList.remove('active');
+  modalCallback = null;
+});
+
+// --- Lógica Principal (Abas, Utils) ---
+function switchTab(tab) {
+  document.getElementById('tabLancamentos').classList.toggle('active', tab === 'lancamentos');
+  document.getElementById('tabCompras').classList.toggle('active', tab === 'compras');
+  document.getElementById('tabBtnLancamentos').classList.toggle('active', tab === 'lancamentos');
+  document.getElementById('tabBtnCompras').classList.toggle('active', tab === 'compras');
+}
+
+function fmt(v) { return v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }); }
+function escapeHtml(str) { const d = document.createElement('div'); d.textContent = str; return d.innerHTML; }
+
+function parseValor(str) {
+  if (!str) return NaN;
+  let limpo = str.trim().replace(/[^0-9.,\-]/g, '');
+  if (limpo.includes(',')) limpo = limpo.replace(/\./g, '').replace(',', '.');
+  return parseFloat(limpo);
+}
+
+function monthLabel(ym) {
+  const [y,m] = ym.split('-');
+  const d = new Date(y, m-1, 1);
+  return d.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
+}
+
+// --- Storage e Renderização (Entradas) ---
+function loadEntries() {
+  try { const raw = localStorage.getItem('controle-financeiro:entries'); entries = raw ? JSON.parse(raw) : []; }
+  catch (e) { entries = []; }
+  populateMonths(); render();
+}
+
+function saveEntries() {
+  try { localStorage.setItem('controle-financeiro:entries', JSON.stringify(entries)); }
+  catch (e) { console.error('Erro ao salvar', e); }
+}
+
+function populateMonths() {
+  const sel = document.getElementById('monthSelect');
+  const months = new Set(entries.map(e => e.data.slice(0,7)));
+  months.add(currentMonth);
+  const sorted = Array.from(months).sort().reverse();
+  sel.innerHTML = sorted.map(m => `<option value="${m}">${monthLabel(m)}</option>`).join('');
+  sel.value = currentMonth;
+}
+
+function prepararDadosDoGrafico(saidasDoMes) {
+  const categorias = {};
+  saidasDoMes.forEach(item => { categorias[item.categoria] = (categorias[item.categoria] || 0) + item.valor; });
+  // Ordena pelas categorias com maiores gastos
+  const categoriasOrdenadas = Object.keys(categorias).sort((a, b) => categorias[b] - categorias[a]);
+  return {
+    labels: categoriasOrdenadas,
+    valores: categoriasOrdenadas.map(cat => categorias[cat])
+  };
+}
+
+function renderizarGrafico(saidasDoMes) {
+  const dados = prepararDadosDoGrafico(saidasDoMes);
+  const wrapper = document.getElementById('chartWrapper');
+  const ctx = document.getElementById('graficoCategorias');
+  
+  if (meuGrafico) meuGrafico.destroy();
+  
+  if (dados.labels.length > 0) {
+    wrapper.style.display = 'block'; // Mostra o card do gráfico
+    // Pega as cores atuais baseadas no tema (claro/escuro)
+    const style = getComputedStyle(document.body);
+    const gridColor = style.getPropertyValue('--paper-line').trim();
+    const textColor = style.getPropertyValue('--ink-soft').trim();
+    const barColor = style.getPropertyValue('--red').trim();
+
+    meuGrafico = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: dados.labels,
+        datasets: [{
+          label: 'Total Gasto (R$)',
+          data: dados.valores,
+          backgroundColor: barColor,
+          borderRadius: 4
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { grid: { color: gridColor }, ticks: { color: textColor, font: { family: 'Inter' } } },
+          y: { grid: { color: gridColor }, ticks: { color: textColor, font: { family: 'Inter' } } }
+        }
+      }
+    });
+  } else {
+    wrapper.style.display = 'none'; // Esconde se não houver gastos
+  }
+}
+
+function render() {
+  const monthEntries = entries.filter(e => e.data.slice(0,7) === currentMonth).sort((a,b) => a.data.localeCompare(b.data));
+  const tbody = document.getElementById('tbody');
+  
+  if (monthEntries.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="5" class="empty">Nenhum lançamento neste mês ainda.</td></tr>';
+  } else {
+    tbody.innerHTML = monthEntries.map(e => `
+      <tr>
+        <td>${new Date(e.data + 'T00:00:00').toLocaleDateString('pt-BR')}</td>
+        <td>${escapeHtml(e.descricao)}</td>
+        <td class="cat"><span>${escapeHtml(e.categoria)}</span></td>
+        <td class="num ${e.tipo === 'entrada' ? 'entrada' : 'saida'}">${e.tipo === 'entrada' ? '+' : '-'} ${fmt(e.valor)}</td>
+        <td class="del"><button onclick="confirmRemoveEntry('${e.id}')" aria-label="Remover">remover</button></td>
+      </tr>
+    `).join('');
+  }
+
+  const totalEntradas = monthEntries.filter(e => e.tipo === 'entrada').reduce((s,e) => s + e.valor, 0);
+  const totalSaidas = monthEntries.filter(e => e.tipo === 'saida').reduce((s,e) => s + e.valor, 0);
+  document.getElementById('totalEntradas').textContent = fmt(totalEntradas);
+  document.getElementById('totalSaidas').textContent = fmt(totalSaidas);
+  document.getElementById('saldoMes').textContent = fmt(totalEntradas - totalSaidas);
+  
+  const saldoTotal = entries.reduce((s,e) => s + (e.tipo === 'entrada' ? e.valor : -e.valor), 0);
+  document.getElementById('saldoTotal').textContent = fmt(saldoTotal);
+
+  // Atualiza o gráfico com as saídas deste mês
+  renderizarGrafico(monthEntries.filter(e => e.tipo === 'saida'));
+}
+
+function removeEntry(id) {
+  entries = entries.filter(e => e.id !== id);
+  saveEntries(); populateMonths(); render();
+}
+
+function confirmRemoveEntry(id) {
+  confirmAction('Tem certeza que deseja excluir este lançamento?', () => {
+    removeEntry(id);
+    showToast('Lançamento removido.');
+  });
+}
+
+document.getElementById('entryForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const descEl = document.getElementById('fDesc');
+  const dataEl = document.getElementById('fData');
+  const valorEl = document.getElementById('fValor');
+  const desc = descEl.value.trim();
+  const data = dataEl.value;
+  const valor = parseValor(valorEl.value);
+  const tipo = document.getElementById('fTipo').value;
+  const categoria = document.getElementById('fCategoria').value;
+
+  descEl.classList.toggle('field-error', !desc);
+  dataEl.classList.toggle('field-error', !data);
+  valorEl.classList.toggle('field-error', isNaN(valor));
+  if (!desc || !data || isNaN(valor)) return;
+
+  entries.push({ id: Date.now().toString(36) + Math.random().toString(36).slice(2), descricao: desc, data, valor, tipo, categoria });
+  saveEntries();
+  currentMonth = data.slice(0,7);
+  populateMonths();
+  render();
+  this.reset();
+  document.getElementById('fData').value = data;
+  showToast('Lançamento adicionado com sucesso!');
+});
+
+document.getElementById('monthSelect').addEventListener('change', function() {
+  currentMonth = this.value; render();
+});
+document.querySelectorAll('#entryForm input, #wishForm input').forEach(el => {
+  el.addEventListener('input', () => el.classList.remove('field-error'));
+});
+
+// --- Whishlist (Lista de Compras) ---
+function loadWishlist() {
+  try { const raw = localStorage.getItem('controle-financeiro:wishlist'); wishlist = raw ? JSON.parse(raw) : []; }
+  catch (e) { wishlist = []; }
+  renderWishlist();
+}
+
+function saveWishlist() {
+  try { localStorage.setItem('controle-financeiro:wishlist', JSON.stringify(wishlist)); }
+  catch (e) { console.error('Erro ao salvar', e); }
+}
+
+const prioridadeLabel = { alta: 'Alta', media: 'Média', baixa: 'Baixa' };
+
+function renderWishlist() {
+  const container = document.getElementById('wishlistContainer');
+  if (wishlist.length === 0) {
+    container.innerHTML = '<div class="empty">Nada na lista ainda. Adicione algo que você quer comprar.</div>';
+  } else {
+    const ordem = { alta: 0, media: 1, baixa: 2 };
+    const ordenado = [...wishlist].sort((a,b) => (a.comprado - b.comprado) || (ordem[a.prioridade] - ordem[b.prioridade]));
+    container.innerHTML = ordenado.map(w => `
+      <div class="wish-item ${w.comprado ? 'comprado' : ''}">
+        <input type="checkbox" class="wish-check" ${w.comprado ? 'checked' : ''} onchange="toggleWish('${w.id}')" aria-label="Comprado">
+        <div class="wish-info">
+          <div class="wish-nome">${escapeHtml(w.nome)}</div>
+          <div class="wish-meta"><span class="wish-prioridade ${w.prioridade}">${prioridadeLabel[w.prioridade]}</span></div>
+        </div>
+        ${w.valor ? `<div class="wish-valor">${fmt(w.valor)}</div>` : ''}
+        <div class="del"><button onclick="confirmRemoveWish('${w.id}')" aria-label="Remover">remover</button></div>
+      </div>
+    `).join('');
+  }
+  const total = wishlist.filter(w => !w.comprado).reduce((s,w) => s + (w.valor || 0), 0);
+  document.getElementById('wishTotal').innerHTML = `Total estimado da lista: <span>${fmt(total)}</span>`;
+}
+
+function toggleWish(id) {
+  const item = wishlist.find(w => w.id === id);
+  if (item) item.comprado = !item.comprado;
+  saveWishlist(); renderWishlist();
+}
+
+function removeWish(id) {
+  wishlist = wishlist.filter(w => w.id !== id);
+  saveWishlist(); renderWishlist();
+}
+
+function confirmRemoveWish(id) {
+  confirmAction('Deseja excluir este item da sua lista?', () => {
+    removeWish(id);
+    showToast('Item removido.');
+  });
+}
+
+document.getElementById('wishForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const nomeEl = document.getElementById('wNome'); const nome = nomeEl.value.trim();
+  const valorRaw = document.getElementById('wValor').value; const valorEl = document.getElementById('wValor');
+  const valor = valorRaw ? parseValor(valorRaw) : null;
+  const prioridade = document.getElementById('wPrioridade').value;
+
+  nomeEl.classList.toggle('field-error', !nome);
+  valorEl.classList.toggle('field-error', valorRaw !== '' && isNaN(valor));
+  if (!nome || (valorRaw !== '' && isNaN(valor))) return;
+
+  wishlist.push({ id: Date.now().toString(36) + Math.random().toString(36).slice(2), nome, valor, prioridade, comprado: false });
+  saveWishlist(); renderWishlist(); this.reset();
+  showToast('Item adicionado à lista!');
+});
+
+const defaultTemplates = [
+  { nome: '🛒 Mercado', desc: 'Supermercado', tipo: 'saida', cat: 'Alimentação' },
+  { nome: '🏠 Aluguel', desc: 'Aluguel', tipo: 'saida', cat: 'Moradia' },
+  { nome: '⛽ Combustível', desc: 'Posto de Gasolina', tipo: 'saida', cat: 'Transporte' },
+  { nome: '💰 Salário', desc: 'Salário Mensal', tipo: 'entrada', cat: 'Salário' }
+];
+
+function renderTemplates() {
+  const container = document.getElementById('quickTemplatesList');
+  container.innerHTML = defaultTemplates.map((t, idx) => `
+    <button type="button" class="quick-btn" onclick="applyTemplate(${idx})">${t.nome}</button>
+  `).join('');
+}
+
+function applyTemplate(idx) {
+  const t = defaultTemplates[idx];
+  document.getElementById('fDesc').value = t.desc;
+  document.getElementById('fTipo').value = t.tipo;
+  document.getElementById('fCategoria').value = t.cat;
+  
+  // Limpa possíveis erros visuais e foca no campo de valor automaticamente
+  document.getElementById('fDesc').classList.remove('field-error');
+  document.getElementById('fValor').focus();
+  
+  showToast('Template aplicado! Preencha o valor.');
+}
+
+// Inicialização
+document.getElementById('fData').value = new Date().toISOString().slice(0,10);
+loadEntries();
+loadWishlist();
+renderTemplates();
+</script>
+</body>
+</html>
