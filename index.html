@@ -1619,7 +1619,9 @@ function renderGoalIconPicker() {
 }
 
 function goalIcon(goal) {
-  if (goal.icone) return goal.icone;
+  const savedIcon = String(goal.icone || "").trim();
+  const oldPlaceholders = new Set(["◇", "◆", "○", "●"]);
+  if (savedIcon && !oldPlaceholders.has(savedIcon)) return savedIcon;
   const name = String(goal.nome || "").toLocaleLowerCase("pt-BR");
   if (/t[eê]nis|sapato|calçado/.test(name)) return "👟";
   if (/viagem|f[eé]rias|passagem/.test(name)) return "✈️";
