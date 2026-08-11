@@ -739,6 +739,56 @@ td {
   gap: 12px;
   align-items: end;
 }
+.goal-icon-field {
+  min-width: 0;
+  margin: 4px 0 0;
+  padding: 0;
+  grid-column: 1 / -1;
+  border: 0;
+}
+.goal-icon-field legend {
+  margin-bottom: 8px;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.goal-icon-picker {
+  display: flex;
+  gap: 8px;
+  padding: 2px 2px 5px;
+  overflow-x: auto;
+  scrollbar-color: var(--border) transparent;
+  scrollbar-width: thin;
+}
+.goal-icon-option {
+  min-width: 65px;
+  padding: 9px 7px 7px;
+  flex: 1 0 65px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface-2);
+  color: var(--muted);
+}
+.goal-icon-option span {
+  display: block;
+  margin-bottom: 3px;
+  font-size: 20px;
+}
+.goal-icon-option small {
+  display: block;
+  overflow: hidden;
+  font-size: 9px;
+  font-weight: 700;
+  text-overflow: ellipsis;
+}
+.goal-icon-option:hover,
+.goal-icon-option.selected {
+  border-color: var(--primary);
+  background: var(--primary-soft);
+  color: var(--text);
+}
 .goals-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -765,6 +815,7 @@ td {
   min-width: 0;
 }
 .goal-emoji {
+  position: relative;
   display: grid;
   place-items: center;
   flex: 0 0 auto;
@@ -773,6 +824,22 @@ td {
   border-radius: 13px;
   background: var(--primary-soft);
   font-size: 20px;
+}
+.goal-emoji i {
+  position: absolute;
+  right: -4px;
+  bottom: -4px;
+  display: grid;
+  place-items: center;
+  width: 17px;
+  height: 17px;
+  border: 2px solid var(--surface);
+  border-radius: 50%;
+  background: var(--green);
+  color: white;
+  font:
+    800 9px "DM Sans",
+    sans-serif;
 }
 .goal-title h3 {
   overflow: hidden;
@@ -1270,6 +1337,18 @@ const CATEGORY_EMOJI = {
   Outros: "●",
 };
 const PRIORITY_LABEL = { alta: "Alta", media: "Média", baixa: "Baixa" };
+const GOAL_ICONS = [
+  { emoji: "🎯", label: "Objetivo" },
+  { emoji: "👟", label: "Tênis" },
+  { emoji: "✈️", label: "Viagem" },
+  { emoji: "🚗", label: "Carro" },
+  { emoji: "📱", label: "Celular" },
+  { emoji: "💻", label: "Notebook" },
+  { emoji: "🎮", label: "Videogame" },
+  { emoji: "🏠", label: "Casa" },
+  { emoji: "🎓", label: "Curso" },
+  { emoji: "🎸", label: "Hobby" },
+];
 const STORAGE = {
   entries: "controle-financeiro:entries",
   goals: "controle-financeiro:wishlist",
@@ -1362,6 +1441,13 @@ const QUICK_TEMPLATES = [
     category: "Saúde",
   },
   {
+    label: "Médico",
+    emoji: "🩺",
+    description: "Consulta médica",
+    type: "saida",
+    category: "Saúde",
+  },
+  {
     label: "Delivery",
     emoji: "🍔",
     description: "Delivery",
@@ -1375,6 +1461,13 @@ const QUICK_TEMPLATES = [
     type: "saida",
     category: "Investimento",
   },
+  {
+    label: "Outros",
+    emoji: "📦",
+    description: "Outro gasto",
+    type: "saida",
+    category: "Outros",
+  },
 ];
 
 let entries = readStorage(STORAGE.entries, []);
@@ -1387,6 +1480,7 @@ let currentMonth = localISODate().slice(0, 7);
 let categoryChart = null;
 let pendingDelete = null;
 let depositGoalId = null;
+let selectedGoalIcon = "🎯";
 
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => [...document.querySelectorAll(selector)];
@@ -1513,6 +1607,29 @@ function renderTemplates() {
       <span class="quick-emoji">${template.emoji}</span><span><b>${template.label}</b><small>${template.type === "entrada" ? "Entrada" : template.category}</small></span><span>›</span>
     </button>`,
   ).join("");
+}
+
+function renderGoalIconPicker() {
+  $("#goalIconPicker").innerHTML = GOAL_ICONS.map(
+    (icon) => `
+      <button class="goal-icon-option ${icon.emoji === selectedGoalIcon ? "selected" : ""}" type="button" data-goal-icon="${icon.emoji}" aria-label="${icon.label}" aria-pressed="${icon.emoji === selectedGoalIcon}">
+        <span>${icon.emoji}</span><small>${icon.label}</small>
+      </button>`,
+  ).join("");
+}
+
+function goalIcon(goal) {
+  if (goal.icone) return goal.icone;
+  const name = String(goal.nome || "").toLocaleLowerCase("pt-BR");
+  if (/t[eê]nis|sapato|calçado/.test(name)) return "👟";
+  if (/viagem|f[eé]rias|passagem/.test(name)) return "✈️";
+  if (/carro|moto|ve[ií]culo/.test(name)) return "🚗";
+  if (/celular|iphone|smartphone/.test(name)) return "📱";
+  if (/notebook|computador|pc/.test(name)) return "💻";
+  if (/game|videogame|console|playstation|xbox/.test(name)) return "🎮";
+  if (/casa|apartamento|m[oó]vel/.test(name)) return "🏠";
+  if (/curso|faculdade|estudo/.test(name)) return "🎓";
+  return "🎯";
 }
 
 function renderDashboard() {
@@ -1700,7 +1817,7 @@ function renderGoals() {
       const done = percent >= 100 || goal.comprado;
       return `<article class="surface goal-card ${done ? "completed" : ""}">
       <div class="goal-top">
-        <div class="goal-title"><span class="goal-emoji">${done ? "✓" : "◇"}</span><div><h3>${escapeHTML(goal.nome)}</h3><span class="priority-pill ${goal.prioridade}">${PRIORITY_LABEL[goal.prioridade] || "Média"}</span></div></div>
+        <div class="goal-title"><span class="goal-emoji">${escapeHTML(goalIcon(goal))}${done ? '<i aria-hidden="true">✓</i>' : ""}</span><div><h3>${escapeHTML(goal.nome)}</h3><span class="priority-pill ${goal.prioridade}">${PRIORITY_LABEL[goal.prioridade] || "Média"}</span></div></div>
         <button class="delete-button" type="button" data-delete-goal="${goal.id}" aria-label="Remover meta ${escapeHTML(goal.nome)}">×</button>
       </div>
       <div class="goal-numbers"><div><span>Guardado</span><strong>${currency(savedValue)}</strong></div><div><span>Meta</span><strong>${currency(value)}</strong></div></div>
@@ -1816,10 +1933,13 @@ $("#goalForm").addEventListener("submit", (event) => {
     valor: value,
     guardado: savedValue,
     prioridade: $("#goalPriority").value,
+    icone: selectedGoalIcon,
     comprado: savedValue >= value,
   });
   writeStorage(STORAGE.goals, goals);
   event.currentTarget.reset();
+  selectedGoalIcon = "🎯";
+  renderGoalIconPicker();
   clearFormErrors(event.currentTarget);
   renderGoals();
   showToast("Meta criada. Bora conquistar! ✨");
@@ -1886,6 +2006,11 @@ document.addEventListener("click", (event) => {
     $("#depositDialog").showModal();
     setTimeout(() => $("#depositValue").focus(), 50);
   }
+  const goalIconButton = event.target.closest("[data-goal-icon]");
+  if (goalIconButton) {
+    selectedGoalIcon = goalIconButton.dataset.goalIcon;
+    renderGoalIconPicker();
+  }
 });
 
 $("#confirmDialog").addEventListener("close", () => {
@@ -1951,6 +2076,7 @@ $("#entryDate").value = localISODate();
 populateSelects();
 $("#entryCategory").value = "Alimentação";
 renderTemplates();
+renderGoalIconPicker();
 renderAll();
 
       });
@@ -2292,6 +2418,15 @@ renderAll();
                 </select></label
               >
               <button class="primary-button" type="submit">Criar meta</button>
+              <fieldset class="goal-icon-field">
+                <legend>Ícone da meta</legend>
+                <div
+                  class="goal-icon-picker"
+                  id="goalIconPicker"
+                  role="group"
+                  aria-label="Escolha um ícone para a meta"
+                ></div>
+              </fieldset>
             </form>
           </article>
           <div class="goals-grid" id="goalsList"></div>
