@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-label="FINTRIQ">
+  <defs>
+    <linearGradient id="g" x1="45" y1="20" x2="470" y2="500" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#8c82ff"/>
+      <stop offset="1" stop-color="#5145c7"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" fill="url(#g)"/>
+  <circle cx="412" cy="95" r="78" fill="#ffffff" opacity=".07"/>
+  <path d="M166 136h190v61H237v58h102v59H237v90h-71V136Z" fill="#fff"/>
+</svg>
