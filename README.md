@@ -1,6 +1,6 @@
-# 📊 Livro de Contas
+# 📊 FINTRIQ
 
-Um aplicativo web moderno, rápido e minimalista para controle financeiro pessoal e gerenciamento de lista de compras.
+**Controle. Planeje. Conquiste.**\n\nUm aplicativo web moderno, rápido e minimalista para controle financeiro pessoal e gerenciamento de lista de compras.
 
 Este projeto foi construído para ser **100% privado e focado no usuário final**, rodando diretamente no navegador sem a necessidade de servidores ou bancos de dados externos, garantindo que os seus dados financeiros fiquem armazenados apenas no seu próprio dispositivo.
 
@@ -22,9 +22,9 @@ Este projeto foi construído para ser **100% privado e focado no usuário final*
 
 ## 🚀 Como acessar e usar
 
-A maneira mais fácil de usar o Livro de Contas é acessando a versão hospedada no GitHub Pages:
+A maneira mais fácil de usar o FINTRIQ é acessando a versão hospedada no GitHub Pages:
 
-👉 [**Acessar o Livro de Contas**](https://dorfonaltz.github.io/meu-livro-de-contas/)
+👉 [**Acessar o FINTRIQ**](https://dorfonaltz.github.io/meu-livro-de-contas/)
 
 **Se preferir rodar localmente no seu computador:**
 
