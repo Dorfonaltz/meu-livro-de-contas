@@ -363,6 +363,19 @@ button {
 .quick-list {
   display: grid;
   gap: 10px;
+  max-height: 245px;
+  padding-right: 5px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-color: var(--border) transparent;
+  scrollbar-width: thin;
+}
+.quick-list::-webkit-scrollbar {
+  width: 5px;
+}
+.quick-list::-webkit-scrollbar-thumb {
+  border-radius: 99px;
+  background: var(--border);
 }
 .quick-button {
   width: 100%;
@@ -904,6 +917,7 @@ td {
   }
   .quick-list {
     grid-template-columns: repeat(2, 1fr);
+    max-height: 280px;
   }
   .form-grid {
     grid-template-columns: repeat(3, 1fr);
@@ -1285,11 +1299,81 @@ const QUICK_TEMPLATES = [
     category: "Transporte",
   },
   {
+    label: "Uber",
+    emoji: "🚕",
+    description: "Uber",
+    type: "saida",
+    category: "Transporte",
+  },
+  {
+    label: "Combustível",
+    emoji: "⛽",
+    description: "Combustível",
+    type: "saida",
+    category: "Transporte",
+  },
+  {
     label: "Salário",
     emoji: "💰",
     description: "Salário mensal",
     type: "entrada",
     category: "Salário",
+  },
+  {
+    label: "Energia",
+    emoji: "⚡",
+    description: "Conta de energia",
+    type: "saida",
+    category: "Contas fixas",
+  },
+  {
+    label: "Água",
+    emoji: "💧",
+    description: "Conta de água",
+    type: "saida",
+    category: "Contas fixas",
+  },
+  {
+    label: "Internet",
+    emoji: "🌐",
+    description: "Internet",
+    type: "saida",
+    category: "Contas fixas",
+  },
+  {
+    label: "Celular",
+    emoji: "📱",
+    description: "Plano de celular",
+    type: "saida",
+    category: "Contas fixas",
+  },
+  {
+    label: "Academia",
+    emoji: "🏋️",
+    description: "Mensalidade da academia",
+    type: "saida",
+    category: "Saúde",
+  },
+  {
+    label: "Farmácia",
+    emoji: "💊",
+    description: "Farmácia",
+    type: "saida",
+    category: "Saúde",
+  },
+  {
+    label: "Delivery",
+    emoji: "🍔",
+    description: "Delivery",
+    type: "saida",
+    category: "Alimentação",
+  },
+  {
+    label: "Investimento",
+    emoji: "📈",
+    description: "Aporte mensal",
+    type: "saida",
+    category: "Investimento",
   },
 ];
 
