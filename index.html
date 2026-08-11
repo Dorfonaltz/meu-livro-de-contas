@@ -6,7 +6,7 @@
       name="viewport"
       content="width=device-width, initial-scale=1, viewport-fit=cover"
     />
-    <meta name="theme-color" content="#11101a" />
+    <meta name="theme-color" content="#0f1018" />
     <meta
       name="description"
       content="FINTRIQ: controle suas contas, planeje o mês e conquiste suas metas."
@@ -21,22 +21,24 @@
     <style>
 :root {
   color-scheme: dark;
-  --bg: #11101a;
-  --bg-glow: rgba(124, 92, 255, 0.13);
-  --surface: #1a1825;
-  --surface-2: #211e2e;
-  --border: #302c40;
-  --text: #f7f5ff;
-  --muted: #9b96ad;
-  --primary: #8b6cff;
-  --primary-strong: #7352f4;
-  --primary-soft: rgba(139, 108, 255, 0.14);
-  --green: #56d99d;
-  --green-soft: rgba(86, 217, 157, 0.12);
-  --red: #ff7188;
-  --red-soft: rgba(255, 113, 136, 0.12);
-  --amber: #f6bd60;
-  --amber-soft: rgba(246, 189, 96, 0.12);
+  --bg: #0f1018;
+  --bg-glow: rgba(116, 103, 240, 0.13);
+  --surface: #191a26;
+  --surface-2: #222330;
+  --border: #303241;
+  --text: #f5f3fa;
+  --muted: #9b98aa;
+  --primary: #7467f0;
+  --primary-strong: #6254de;
+  --primary-deep: #5145c7;
+  --primary-text: #a39bff;
+  --primary-soft: rgba(116, 103, 240, 0.14);
+  --green: #45d39d;
+  --green-soft: rgba(69, 211, 157, 0.12);
+  --red: #ff6b7d;
+  --red-soft: rgba(255, 107, 125, 0.12);
+  --amber: #f2b84b;
+  --amber-soft: rgba(242, 184, 75, 0.12);
   --shadow: 0 18px 50px rgba(0, 0, 0, 0.2);
   --radius: 20px;
 }
@@ -50,15 +52,17 @@ body.light-theme {
   --border: #e4e0ec;
   --text: #201c2c;
   --muted: #756f83;
-  --primary: #7251ef;
-  --primary-strong: #6040d7;
-  --primary-soft: rgba(114, 81, 239, 0.1);
+  --primary: #6659e8;
+  --primary-strong: #5547d2;
+  --primary-deep: #4639bb;
+  --primary-text: #5547d2;
+  --primary-soft: rgba(102, 89, 232, 0.1);
   --green: #16865c;
   --green-soft: rgba(22, 134, 92, 0.1);
-  --red: #d84c64;
-  --red-soft: rgba(216, 76, 100, 0.1);
-  --amber: #ad720d;
-  --amber-soft: rgba(173, 114, 13, 0.1);
+  --red: #d94f61;
+  --red-soft: rgba(217, 79, 97, 0.1);
+  --amber: #a96e0b;
+  --amber-soft: rgba(169, 110, 11, 0.1);
   --shadow: 0 18px 45px rgba(35, 25, 70, 0.08);
 }
 
@@ -127,12 +131,12 @@ button {
   width: 42px;
   height: 42px;
   border-radius: 13px;
-  background: linear-gradient(145deg, #9c83ff, #6541e9);
+  background: linear-gradient(145deg, #8c82ff, #5f52db);
   color: white;
   font:
     800 21px "Manrope",
     sans-serif;
-  box-shadow: 0 8px 24px rgba(115, 82, 244, 0.25);
+  box-shadow: 0 8px 24px rgba(116, 103, 240, 0.25);
 }
 .brand strong {
   display: block;
@@ -238,7 +242,7 @@ button {
 }
 .eyebrow {
   margin: 0;
-  color: var(--primary);
+  color: var(--primary-text);
   font-size: 11px;
   font-weight: 800;
   letter-spacing: 0.12em;
@@ -328,7 +332,7 @@ button {
   width: 48px;
   height: 48px;
   border-radius: 15px;
-  background: var(--primary);
+  background: var(--primary-strong);
   color: white;
   font-size: 21px;
   font-weight: 800;
@@ -370,7 +374,7 @@ button {
   letter-spacing: -0.035em;
 }
 .summary-card.balance-card {
-  background: linear-gradient(145deg, #7959f5, #4f31c5);
+  background: linear-gradient(145deg, #7467f0, #5145c7);
   border: 0;
   color: white;
 }
@@ -540,12 +544,12 @@ select:focus {
   font-weight: 800;
 }
 .primary-button {
-  background: var(--primary);
+  background: var(--primary-strong);
   color: white;
   box-shadow: 0 8px 18px rgba(115, 82, 244, 0.18);
 }
 .primary-button:hover {
-  background: var(--primary-strong);
+  background: var(--primary-deep);
   transform: translateY(-1px);
 }
 .secondary-button {
@@ -611,7 +615,7 @@ td {
   padding: 5px 9px;
   border-radius: 99px;
   background: var(--primary-soft);
-  color: var(--primary);
+  color: var(--primary-text);
   font-size: 11px;
   font-weight: 700;
 }
@@ -696,7 +700,7 @@ tr.pending .money {
   margin: 0 auto 12px;
   border-radius: 14px;
   background: var(--surface-2);
-  color: var(--primary);
+  color: var(--primary-text);
   font-size: 22px;
 }
 .empty-state h3 {
@@ -1484,7 +1488,7 @@ tr.pending .money {
     height: 52px;
     border: 0;
     border-radius: 17px;
-    background: var(--primary);
+    background: var(--primary-strong);
     color: white;
     box-shadow: 0 12px 25px rgba(115, 82, 244, 0.4);
     font-size: 25px;
@@ -2054,14 +2058,14 @@ function renderChart(totalExpenses) {
         {
           data: items.map(([, value]) => value),
           backgroundColor: [
-            "#8b6cff",
-            "#56d99d",
-            "#f6bd60",
-            "#ff7188",
-            "#4db7e5",
-            "#b58cff",
-            "#70c6a5",
-            "#d78aee",
+            "#7467f0",
+            "#45d39d",
+            "#f2b84b",
+            "#ff6b7d",
+            "#4dafe0",
+            "#9d8df7",
+            "#64c8a3",
+            "#d87be3",
           ],
           borderWidth: 0,
           hoverOffset: 5,
