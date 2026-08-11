@@ -12,6 +12,13 @@
       content="FINTRIQ: controle suas contas, planeje o mês e conquiste suas metas."
     />
     <title>FINTRIQ | Controle. Planeje. Conquiste.</title>
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="FINTRIQ" />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="icon" href="icons/icon-192.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="icons/icon-192.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -157,12 +164,34 @@ button {
   gap: 10px;
 }
 .month-picker select,
-.icon-button {
+.icon-button,
+.install-button {
   height: 42px;
   border: 1px solid var(--border);
   background: var(--surface);
   color: var(--text);
   border-radius: 12px;
+}
+.install-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 0 13px;
+  color: white;
+  background: var(--primary-strong);
+  font-size: 12px;
+  font-weight: 800;
+}
+.install-button:hover {
+  background: var(--primary-deep);
+  transform: translateY(-1px);
+}
+.install-button span {
+  font-size: 17px;
+}
+[hidden] {
+  display: none !important;
 }
 .month-picker select {
   min-width: 172px;
@@ -1235,6 +1264,13 @@ tr.pending .money {
     max-width: 145px;
     font-size: 12px;
   }
+  .install-button {
+    width: 42px;
+    padding: 0;
+  }
+  .install-button b {
+    display: none;
+  }
   .main-nav {
     position: fixed;
     z-index: 20;
@@ -1501,6 +1537,15 @@ tr.pending .money {
   .toast {
     min-width: 0;
     text-align: center;
+  }
+}
+
+@media (display-mode: standalone) {
+  .install-button {
+    display: none !important;
+  }
+  .topbar {
+    padding-top: env(safe-area-inset-top);
   }
 }
 
@@ -2565,6 +2610,51 @@ $("#recurringType").addEventListener("change", (event) => {
     $("#recurringCategory").value = "Alimentação";
   }
 });
+
+let deferredInstallPrompt = null;
+const installButton = $("#installApp");
+const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+const isStandalone =
+  window.matchMedia?.("(display-mode: standalone)")?.matches === true ||
+  window.navigator.standalone === true;
+
+if (isIOS && !isStandalone) installButton.hidden = false;
+
+window.addEventListener("beforeinstallprompt", (event) => {
+  event.preventDefault();
+  deferredInstallPrompt = event;
+  installButton.hidden = false;
+});
+
+installButton.addEventListener("click", async () => {
+  if (deferredInstallPrompt) {
+    deferredInstallPrompt.prompt();
+    await deferredInstallPrompt.userChoice;
+    deferredInstallPrompt = null;
+    installButton.hidden = true;
+    return;
+  }
+  if (isIOS) {
+    showToast(
+      "No iPhone: toque em Compartilhar e depois em Adicionar à Tela de Início.",
+    );
+  }
+});
+
+window.addEventListener("appinstalled", () => {
+  deferredInstallPrompt = null;
+  installButton.hidden = true;
+  showToast("FINTRIQ instalado com sucesso!");
+});
+
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker
+      .register("./sw.js", { updateViaCache: "none" })
+      .catch(() => {});
+  });
+}
+
 $("#themeToggle").addEventListener("click", () => {
   document.body.classList.toggle("light-theme");
   const light = document.body.classList.contains("light-theme");
@@ -2614,6 +2704,15 @@ renderAll();
             <span class="sr-only">Selecionar mês</span>
             <select id="monthSelect"></select>
           </label>
+          <button
+            class="install-button"
+            id="installApp"
+            type="button"
+            aria-label="Instalar FINTRIQ"
+            hidden
+          >
+            <span aria-hidden="true">⇩</span><b>Instalar</b>
+          </button>
           <button
             class="icon-button"
             id="themeToggle"
