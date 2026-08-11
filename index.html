@@ -312,6 +312,63 @@ button {
   color: var(--muted);
   font-size: 11px;
 }
+
+.forecast-card {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 18px;
+  box-shadow: none;
+  background: linear-gradient(135deg, var(--surface), var(--primary-soft));
+}
+.forecast-icon {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 15px;
+  background: var(--primary);
+  color: white;
+  font-size: 21px;
+  font-weight: 800;
+}
+.forecast-copy h2 {
+  margin: 4px 0 3px;
+  font:
+    800 17px "Manrope",
+    sans-serif;
+  letter-spacing: -0.025em;
+}
+.forecast-copy > p:last-child {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+.forecast-values {
+  display: flex;
+  gap: 24px;
+  padding-left: 20px;
+  border-left: 1px solid var(--border);
+}
+.forecast-values div {
+  min-width: 125px;
+}
+.forecast-values span {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.forecast-values strong {
+  font:
+    800 18px "Manrope",
+    sans-serif;
+  letter-spacing: -0.035em;
+}
 .summary-card.balance-card {
   background: linear-gradient(145deg, #7959f5, #4f31c5);
   border: 0;
@@ -583,6 +640,48 @@ td {
   color: var(--red);
   background: var(--red-soft);
 }
+.entry-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 5px;
+}
+.pay-button {
+  min-width: 32px;
+  height: 32px;
+  padding: 0 9px;
+  border: 0;
+  border-radius: 9px;
+  background: var(--green-soft);
+  color: var(--green);
+  font-size: 12px;
+  font-weight: 800;
+}
+.pay-button:hover {
+  transform: translateY(-1px);
+  background: color-mix(in srgb, var(--green-soft) 70%, var(--green));
+}
+.status-pill {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 3px 7px;
+  border-radius: 99px;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.status-pill.pending {
+  background: var(--amber-soft);
+  color: var(--amber);
+}
+.status-pill.paid {
+  background: var(--green-soft);
+  color: var(--green);
+}
+tr.pending .entry-main b,
+tr.pending .money {
+  color: var(--muted);
+}
 
 .empty-state {
   padding: 54px 20px;
@@ -663,6 +762,109 @@ td {
   grid-template-columns: 1fr 1fr auto;
   gap: 12px;
   align-items: end;
+}
+
+.recurring-overview {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-bottom: 18px;
+}
+.recurring-overview .surface {
+  box-shadow: none;
+}
+.recurring-overview p {
+  margin: 0 0 7px;
+  color: var(--muted);
+  font-size: 12px;
+}
+.recurring-overview strong {
+  font:
+    800 23px "Manrope",
+    sans-serif;
+  letter-spacing: -0.035em;
+}
+.recurring-form-surface {
+  margin-bottom: 18px;
+}
+.recurring-form {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 0.7fr 0.8fr 1fr auto;
+  gap: 12px;
+  align-items: end;
+}
+.recurring-list {
+  display: grid;
+  gap: 11px;
+}
+.recurring-item {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 13px;
+  padding: 18px 20px;
+}
+.recurring-item.inactive {
+  opacity: 0.62;
+  box-shadow: none;
+}
+.recurring-icon {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 13px;
+  background: var(--primary-soft);
+  font-size: 19px;
+}
+.recurring-main {
+  min-width: 0;
+}
+.recurring-main h3 {
+  overflow: hidden;
+  margin: 0 0 5px;
+  font:
+    800 15px "Manrope",
+    sans-serif;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.recurring-main p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 11px;
+}
+.recurring-side {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.recurring-value {
+  text-align: right;
+}
+.recurring-value strong {
+  display: block;
+  font-size: 14px;
+}
+.recurring-value small {
+  color: var(--muted);
+  font-size: 10px;
+}
+.toggle-button {
+  min-width: 72px;
+  height: 34px;
+  padding: 0 10px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface-2);
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 800;
+}
+.toggle-button.active {
+  border-color: color-mix(in srgb, var(--green) 35%, var(--border));
+  background: var(--green-soft);
+  color: var(--green);
 }
 .budget-list {
   display: grid;
@@ -1001,6 +1203,12 @@ td {
   .goal-form button {
     width: max-content;
   }
+  .recurring-form {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .recurring-form .wide {
+    grid-column: span 2;
+  }
 }
 
 @media (max-width: 700px) {
@@ -1033,7 +1241,7 @@ td {
     margin: 0;
     padding: 6px;
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     border: 1px solid var(--border);
     border-radius: 18px;
     background: color-mix(in srgb, var(--surface) 92%, transparent);
@@ -1062,6 +1270,24 @@ td {
   }
   .section-heading h1 {
     font-size: 27px;
+  }
+  .forecast-card {
+    grid-template-columns: 42px 1fr;
+    gap: 13px;
+  }
+  .forecast-icon {
+    width: 42px;
+    height: 42px;
+  }
+  .forecast-values {
+    grid-column: 1 / -1;
+    justify-content: space-between;
+    padding: 14px 0 0;
+    border-top: 1px solid var(--border);
+    border-left: 0;
+  }
+  .forecast-values div {
+    min-width: 0;
   }
   .desktop-add {
     display: none;
@@ -1106,21 +1332,34 @@ td {
   }
   .form-grid,
   .budget-form,
-  .goal-form {
+  .goal-form,
+  .recurring-form {
     grid-template-columns: 1fr 1fr;
   }
   .form-grid .wide,
-  .goal-form .wide {
+  .goal-form .wide,
+  .recurring-form .wide {
     grid-column: 1 / -1;
   }
   .form-grid .submit-button,
   .budget-form button,
-  .goal-form button {
+  .goal-form > .primary-button,
+  .recurring-form > .primary-button {
     grid-column: 1 / -1;
     width: 100%;
   }
   .transactions-surface {
     padding-bottom: 16px;
+  }
+  .pay-button {
+    width: 32px;
+    min-width: 32px;
+    padding: 0;
+    font-size: 0;
+  }
+  .pay-button::before {
+    content: attr(data-mobile-label);
+    font-size: 12px;
   }
   .table-wrap {
     overflow: visible;
@@ -1202,6 +1441,22 @@ td {
     grid-template-columns: 1fr;
     gap: 9px;
   }
+  .recurring-overview {
+    grid-template-columns: 1fr;
+    gap: 9px;
+  }
+  .recurring-overview .surface {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 18px;
+  }
+  .recurring-overview p {
+    margin: 0;
+  }
+  .recurring-overview strong {
+    font-size: 18px;
+  }
   .goal-overview .surface {
     display: flex;
     justify-content: space-between;
@@ -1272,7 +1527,8 @@ td {
   }
   .form-grid,
   .budget-form,
-  .goal-form {
+  .goal-form,
+  .recurring-form {
     grid-template-columns: 1fr;
   }
   .form-grid .wide,
@@ -1291,6 +1547,23 @@ td {
   }
   .goal-footer {
     align-items: flex-end;
+  }
+  .recurring-item {
+    grid-template-columns: 40px 1fr;
+    padding: 15px;
+  }
+  .recurring-icon {
+    width: 40px;
+    height: 40px;
+  }
+  .recurring-side {
+    grid-column: 1 / -1;
+    justify-content: space-between;
+    padding-top: 10px;
+    border-top: 1px solid var(--border);
+  }
+  .recurring-value {
+    text-align: left;
   }
 }
 
@@ -1353,6 +1626,7 @@ const STORAGE = {
   entries: "controle-financeiro:entries",
   goals: "controle-financeiro:wishlist",
   budgets: "controle-financeiro:budgets",
+  recurring: "controle-financeiro:recurring",
   theme: "controle-financeiro:theme",
 };
 const QUICK_TEMPLATES = [
@@ -1476,6 +1750,7 @@ let goals = readStorage(STORAGE.goals, []).map((goal) => ({
   guardado: Number(goal.guardado) || 0,
 }));
 let budgets = readStorage(STORAGE.budgets, {});
+let recurring = readStorage(STORAGE.recurring, []);
 let currentMonth = localISODate().slice(0, 7);
 let categoryChart = null;
 let pendingDelete = null;
@@ -1549,7 +1824,7 @@ function monthEntries() {
 }
 function expensesByCategory() {
   return monthEntries()
-    .filter((entry) => entry.tipo === "saida")
+    .filter((entry) => entry.tipo === "saida" && entry.pago !== false)
     .reduce((result, entry) => {
       result[entry.categoria] =
         (result[entry.categoria] || 0) + Number(entry.valor || 0);
@@ -1558,6 +1833,39 @@ function expensesByCategory() {
 }
 function currentBudgets() {
   return budgets[currentMonth] || {};
+}
+
+function ensureRecurringEntries(month) {
+  let changed = false;
+  const [year, monthNumber] = month.split("-").map(Number);
+  const lastDay = new Date(year, monthNumber, 0).getDate();
+
+  recurring
+    .filter(
+      (item) => item.ativo !== false && (!item.inicio || item.inicio <= month),
+    )
+    .forEach((item) => {
+      const alreadyExists = entries.some(
+        (entry) =>
+          entry.recurringId === item.id && entry.data?.slice(0, 7) === month,
+      );
+      if (alreadyExists) return;
+      const day = Math.min(Math.max(Number(item.dia) || 1, 1), lastDay);
+      entries.push({
+        id: id(),
+        descricao: item.descricao,
+        valor: Number(item.valor),
+        data: `${month}-${String(day).padStart(2, "0")}`,
+        tipo: item.tipo,
+        categoria: item.categoria,
+        recurringId: item.id,
+        automatico: true,
+        pago: false,
+      });
+      changed = true;
+    });
+
+  if (changed) writeStorage(STORAGE.entries, entries);
 }
 
 function showToast(message) {
@@ -1584,6 +1892,9 @@ function populateSelects() {
     (category) => `<option>${category}</option>`,
   ).join("");
   $("#budgetCategory").innerHTML = EXPENSE_CATEGORIES.map(
+    (category) => `<option>${category}</option>`,
+  ).join("");
+  $("#recurringCategory").innerHTML = CATEGORIES.map(
     (category) => `<option>${category}</option>`,
   ).join("");
 }
@@ -1636,12 +1947,22 @@ function goalIcon(goal) {
 
 function renderDashboard() {
   const list = monthEntries().sort((a, b) => b.data.localeCompare(a.data));
-  const income = list
+  const confirmed = list.filter((entry) => entry.pago !== false);
+  const pending = list.filter((entry) => entry.pago === false);
+  const income = confirmed
     .filter((entry) => entry.tipo === "entrada")
     .reduce((sum, entry) => sum + Number(entry.valor || 0), 0);
-  const expenses = list
+  const expenses = confirmed
     .filter((entry) => entry.tipo === "saida")
     .reduce((sum, entry) => sum + Number(entry.valor || 0), 0);
+  const pendingIncome = pending
+    .filter((entry) => entry.tipo === "entrada")
+    .reduce((sum, entry) => sum + Number(entry.valor || 0), 0);
+  const pendingExpenses = pending
+    .filter((entry) => entry.tipo === "saida")
+    .reduce((sum, entry) => sum + Number(entry.valor || 0), 0);
+  const currentBalance = income - expenses;
+  const forecast = currentBalance + pendingIncome - pendingExpenses;
   const totalBudget = Object.values(currentBudgets()).reduce(
     (sum, value) => sum + Number(value || 0),
     0,
@@ -1655,9 +1976,9 @@ function renderDashboard() {
 
   $("#incomeTotal").textContent = currency(income);
   $("#expenseTotal").textContent = currency(expenses);
-  $("#monthBalance").textContent = currency(income - expenses);
-  $("#balanceHint").textContent = list.length
-    ? `${list.length} ${list.length === 1 ? "movimentação" : "movimentações"}`
+  $("#monthBalance").textContent = currency(currentBalance);
+  $("#balanceHint").textContent = confirmed.length
+    ? `${confirmed.length} ${confirmed.length === 1 ? "movimentação confirmada" : "movimentações confirmadas"}`
     : "Nenhum lançamento";
   $("#budgetRemaining").textContent = totalBudget ? currency(remaining) : "—";
   $("#budgetRemaining").style.color =
@@ -1669,18 +1990,44 @@ function renderDashboard() {
     : "Defina seus limites";
   $("#entryCount").textContent =
     `${list.length} ${list.length === 1 ? "item" : "itens"}`;
+  $("#pendingExpenses").textContent = currency(pendingExpenses);
+  $("#forecastBalance").textContent = currency(forecast);
+  $("#forecastBalance").style.color = forecast < 0 ? "var(--red)" : "";
+  if (pending.length) {
+    $("#forecastTitle").textContent =
+      `${pending.length} ${pending.length === 1 ? "lançamento pendente" : "lançamentos pendentes"}`;
+    $("#forecastDescription").textContent = pendingIncome
+      ? `${currency(pendingIncome)} ainda deve entrar e ${currency(pendingExpenses)} ainda deve sair.`
+      : `${currency(pendingExpenses)} ainda será descontado do seu saldo atual.`;
+  } else if (recurring.length) {
+    $("#forecastTitle").textContent = "Tudo pago neste mês";
+    $("#forecastDescription").textContent =
+      "Não há contas fixas pendentes no mês selecionado.";
+  } else {
+    $("#forecastTitle").textContent = "Tudo em dia por enquanto";
+    $("#forecastDescription").textContent =
+      "Cadastre contas fixas para antecipar quanto sobrará no fim do mês.";
+  }
 
   $("#entriesBody").innerHTML = list
-    .map(
-      (entry) => `
-    <tr>
-      <td><div class="entry-main"><span class="entry-icon">${CATEGORY_EMOJI[entry.categoria] || "●"}</span><span><b>${escapeHTML(entry.descricao)}</b><small>${formatDate(entry.data)}</small></span></div></td>
+    .map((entry) => {
+      const isPending = entry.pago === false;
+      const automatic = Boolean(entry.recurringId);
+      const status = automatic
+        ? `<span class="status-pill ${isPending ? "pending" : "paid"}">${isPending ? "Pendente" : "Pago"}</span>`
+        : "";
+      const actions = automatic
+        ? `<button class="pay-button" type="button" data-toggle-paid="${entry.id}" data-mobile-label="${isPending ? "✓" : "↶"}" aria-label="${isPending ? "Marcar como pago" : "Marcar como pendente"}">${isPending ? "✓ Pagar" : "↶ Pendente"}</button>`
+        : `<button class="delete-button" type="button" data-delete-entry="${entry.id}" aria-label="Remover ${escapeHTML(entry.descricao)}">×</button>`;
+      return `
+    <tr class="${isPending ? "pending" : ""}">
+      <td><div class="entry-main"><span class="entry-icon">${CATEGORY_EMOJI[entry.categoria] || "●"}</span><span><b>${escapeHTML(entry.descricao)} ${status}</b><small>${formatDate(entry.data)}</small></span></div></td>
       <td><span class="category-pill">${escapeHTML(entry.categoria)}</span></td>
       <td>${formatDate(entry.data)}</td>
       <td class="align-right"><span class="money ${entry.tipo}">${entry.tipo === "entrada" ? "+" : "−"} ${currency(entry.valor)}</span></td>
-      <td><button class="delete-button" type="button" data-delete-entry="${entry.id}" aria-label="Remover ${escapeHTML(entry.descricao)}">×</button></td>
-    </tr>`,
-    )
+      <td><div class="entry-actions">${actions}</div></td>
+    </tr>`;
+    })
     .join("");
   $("#entriesEmpty").hidden = list.length > 0;
   $(".table-wrap").hidden = list.length === 0;
@@ -1787,6 +2134,63 @@ function renderBudgets() {
     .join("");
 }
 
+function renderRecurring() {
+  const active = recurring.filter((item) => item.ativo !== false);
+  const expenses = active
+    .filter((item) => item.tipo === "saida")
+    .reduce((sum, item) => sum + Number(item.valor || 0), 0);
+  const income = active
+    .filter((item) => item.tipo === "entrada")
+    .reduce((sum, item) => sum + Number(item.valor || 0), 0);
+
+  $("#recurringExpenses").textContent = currency(expenses);
+  $("#recurringIncome").textContent = currency(income);
+  $("#recurringActive").textContent = String(active.length);
+  $("#recurringEmpty").hidden = recurring.length > 0;
+
+  const ordered = [...recurring].sort(
+    (a, b) =>
+      Number(b.ativo !== false) - Number(a.ativo !== false) || a.dia - b.dia,
+  );
+  $("#recurringList").innerHTML = ordered
+    .map((item) => {
+      const monthEntry = entries.find(
+        (entry) =>
+          entry.recurringId === item.id &&
+          entry.data?.slice(0, 7) === currentMonth,
+      );
+      const isPending = monthEntry?.pago === false;
+      const status =
+        item.ativo === false
+          ? "Pausada"
+          : !monthEntry
+            ? "Começa no próximo período"
+            : isPending
+              ? "Pendente neste mês"
+              : "Pago neste mês";
+      const paymentButton = monthEntry
+        ? `<button class="pay-button" type="button" data-toggle-paid="${monthEntry.id}" data-mobile-label="${isPending ? "✓" : "↶"}">${isPending ? "✓ Pagar" : "↶ Pendente"}</button>`
+        : "";
+      return `<article class="surface recurring-item ${item.ativo === false ? "inactive" : ""}">
+        <span class="recurring-icon">${CATEGORY_EMOJI[item.categoria] || "↻"}</span>
+        <div class="recurring-main">
+          <h3>${escapeHTML(item.descricao)}</h3>
+          <p>Todo dia ${item.dia} · ${escapeHTML(item.categoria)} · ${status}</p>
+        </div>
+        <div class="recurring-side">
+          <div class="recurring-value">
+            <strong class="money ${item.tipo}">${item.tipo === "entrada" ? "+" : "−"} ${currency(item.valor)}</strong>
+            <small>por mês</small>
+          </div>
+          ${paymentButton}
+          <button class="toggle-button ${item.ativo !== false ? "active" : ""}" type="button" data-toggle-recurring="${item.id}">${item.ativo !== false ? "Ativa" : "Pausada"}</button>
+          <button class="delete-button" type="button" data-delete-recurring="${item.id}" aria-label="Remover ${escapeHTML(item.descricao)}">×</button>
+        </div>
+      </article>`;
+    })
+    .join("");
+}
+
 function renderGoals() {
   const ordered = [...goals].sort((a, b) => {
     const aDone = Number(a.guardado || 0) >= Number(a.valor || 0) || a.comprado;
@@ -1831,9 +2235,11 @@ function renderGoals() {
 }
 
 function renderAll() {
+  ensureRecurringEntries(currentMonth);
   populateMonths();
   renderDashboard();
   renderBudgets();
+  renderRecurring();
   renderGoals();
 }
 function switchTab(tab) {
@@ -1883,6 +2289,7 @@ $("#entryForm").addEventListener("submit", (event) => {
     data: date,
     tipo: $("#entryType").value,
     categoria: $("#entryCategory").value,
+    pago: true,
   });
   writeStorage(STORAGE.entries, entries);
   currentMonth = date.slice(0, 7);
@@ -1912,6 +2319,47 @@ $("#budgetForm").addEventListener("submit", (event) => {
   field.value = "";
   renderAll();
   showToast("Limite mensal salvo.");
+});
+
+$("#recurringForm").addEventListener("submit", (event) => {
+  event.preventDefault();
+  const descriptionField = $("#recurringDescription");
+  const valueField = $("#recurringValue");
+  const dayField = $("#recurringDay");
+  const description = descriptionField.value.trim();
+  const value = parseMoney(valueField.value);
+  const day = Number(dayField.value);
+  setInvalid(descriptionField, !description);
+  setInvalid(valueField, !(value > 0));
+  setInvalid(dayField, !Number.isInteger(day) || day < 1 || day > 31);
+  if (
+    !description ||
+    !(value > 0) ||
+    !Number.isInteger(day) ||
+    day < 1 ||
+    day > 31
+  ) {
+    showToast("Confira os dados da conta fixa.");
+    return;
+  }
+  recurring.push({
+    id: id(),
+    descricao: description,
+    valor: value,
+    dia: day,
+    tipo: $("#recurringType").value,
+    categoria: $("#recurringCategory").value,
+    inicio: currentMonth,
+    ativo: true,
+  });
+  writeStorage(STORAGE.recurring, recurring);
+  event.currentTarget.reset();
+  $("#recurringDay").value = "10";
+  $("#recurringType").value = "saida";
+  $("#recurringCategory").value = "Alimentação";
+  clearFormErrors(event.currentTarget);
+  renderAll();
+  showToast("Conta fixa adicionada e lançamento do mês criado.");
 });
 
 $("#goalForm").addEventListener("submit", (event) => {
@@ -2013,6 +2461,40 @@ document.addEventListener("click", (event) => {
     selectedGoalIcon = goalIconButton.dataset.goalIcon;
     renderGoalIconPicker();
   }
+  const paidButton = event.target.closest("[data-toggle-paid]");
+  if (paidButton) {
+    const entry = entries.find(
+      (item) => item.id === paidButton.dataset.togglePaid,
+    );
+    if (entry) {
+      entry.pago = entry.pago === false;
+      writeStorage(STORAGE.entries, entries);
+      renderAll();
+      showToast(
+        entry.pago ? "Conta marcada como paga." : "Conta voltou para pendente.",
+      );
+    }
+  }
+  const recurringButton = event.target.closest("[data-toggle-recurring]");
+  if (recurringButton) {
+    const item = recurring.find(
+      (candidate) => candidate.id === recurringButton.dataset.toggleRecurring,
+    );
+    if (item) {
+      item.ativo = item.ativo === false;
+      writeStorage(STORAGE.recurring, recurring);
+      renderAll();
+      showToast(item.ativo ? "Conta fixa ativada." : "Conta fixa pausada.");
+    }
+  }
+  const deleteRecurringButton = event.target.closest("[data-delete-recurring]");
+  if (deleteRecurringButton) {
+    const item = recurring.find(
+      (candidate) =>
+        candidate.id === deleteRecurringButton.dataset.deleteRecurring,
+    );
+    if (item) askDelete("recurring", item.id, item.descricao);
+  }
 });
 
 $("#confirmDialog").addEventListener("close", () => {
@@ -2032,6 +2514,22 @@ $("#confirmDialog").addEventListener("close", () => {
     delete budgets[currentMonth][pendingDelete.key];
     writeStorage(STORAGE.budgets, budgets);
   }
+  if (pendingDelete.type === "recurring") {
+    recurring = recurring.filter((item) => item.id !== pendingDelete.key);
+    entries = entries
+      .filter(
+        (entry) =>
+          entry.recurringId !== pendingDelete.key || entry.pago !== false,
+      )
+      .map((entry) => {
+        if (entry.recurringId !== pendingDelete.key) return entry;
+        const manualEntry = { ...entry, automatico: false };
+        delete manualEntry.recurringId;
+        return manualEntry;
+      });
+    writeStorage(STORAGE.recurring, recurring);
+    writeStorage(STORAGE.entries, entries);
+  }
   pendingDelete = null;
   renderAll();
   showToast("Item removido.");
@@ -2050,6 +2548,17 @@ $("#entryType").addEventListener("change", (event) => {
     $("#entryCategory").value === "Salário"
   ) {
     $("#entryCategory").value = "Alimentação";
+  }
+});
+$("#recurringType").addEventListener("change", (event) => {
+  if (event.target.value === "entrada") {
+    $("#recurringCategory").value = "Salário";
+  }
+  if (
+    event.target.value === "saida" &&
+    $("#recurringCategory").value === "Salário"
+  ) {
+    $("#recurringCategory").value = "Alimentação";
   }
 });
 $("#themeToggle").addEventListener("click", () => {
@@ -2077,6 +2586,8 @@ $("#themeToggle span").textContent = document.body.classList.contains(
 $("#entryDate").value = localISODate();
 populateSelects();
 $("#entryCategory").value = "Alimentação";
+$("#recurringCategory").value = "Alimentação";
+$("#recurringDay").value = "10";
 renderTemplates();
 renderGoalIconPicker();
 renderAll();
@@ -2116,6 +2627,9 @@ renderAll();
         </button>
         <button class="nav-button" type="button" data-tab="budgets">
           <span aria-hidden="true">◔</span><span>Orçamento</span>
+        </button>
+        <button class="nav-button" type="button" data-tab="recurring">
+          <span aria-hidden="true">↻</span><span>Fixas</span>
         </button>
         <button class="nav-button" type="button" data-tab="goals">
           <span aria-hidden="true">◇</span><span>Metas</span>
@@ -2168,6 +2682,27 @@ renderAll();
               ><small id="budgetHint">Defina seus limites</small>
             </article>
           </div>
+
+          <article class="surface forecast-card">
+            <span class="forecast-icon" aria-hidden="true">↗</span>
+            <div class="forecast-copy">
+              <p class="eyebrow">Previsão do mês</p>
+              <h2 id="forecastTitle">Tudo em dia por enquanto</h2>
+              <p id="forecastDescription">
+                Cadastre contas fixas para antecipar quanto sobrará no fim do mês.
+              </p>
+            </div>
+            <div class="forecast-values">
+              <div>
+                <span>Contas pendentes</span>
+                <strong id="pendingExpenses">R$ 0,00</strong>
+              </div>
+              <div>
+                <span>Saldo previsto</span>
+                <strong id="forecastBalance">R$ 0,00</strong>
+              </div>
+            </div>
+          </article>
 
           <div class="dashboard-grid">
             <article class="surface chart-card">
@@ -2275,6 +2810,102 @@ renderAll();
               <p>Seus registros deste mês aparecerão aqui.</p>
             </div>
           </article>
+        </section>
+
+        <section
+          class="tab-panel"
+          id="recurringPanel"
+          aria-labelledby="recurringTitle"
+        >
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Automação mensal</p>
+              <h1 id="recurringTitle">Contas fixas</h1>
+              <p class="section-description">
+                Cadastre uma vez e o lançamento será criado automaticamente todo mês.
+              </p>
+            </div>
+          </div>
+
+          <div class="recurring-overview">
+            <article class="surface">
+              <p>Despesas fixas</p>
+              <strong id="recurringExpenses">R$ 0,00</strong>
+            </article>
+            <article class="surface">
+              <p>Entradas fixas</p>
+              <strong id="recurringIncome">R$ 0,00</strong>
+            </article>
+            <article class="surface">
+              <p>Cadastros ativos</p>
+              <strong id="recurringActive">0</strong>
+            </article>
+          </div>
+
+          <article class="surface recurring-form-surface">
+            <div class="surface-heading">
+              <div>
+                <p class="eyebrow">Novo cadastro</p>
+                <h2>Adicionar conta fixa</h2>
+              </div>
+            </div>
+            <form class="recurring-form" id="recurringForm" novalidate>
+              <label class="wide">
+                <span>Descrição</span>
+                <input
+                  id="recurringDescription"
+                  type="text"
+                  placeholder="Ex.: Aluguel"
+                  autocomplete="off"
+                  required
+                />
+              </label>
+              <label>
+                <span>Valor</span>
+                <span class="money-field">
+                  <b>R$</b>
+                  <input
+                    id="recurringValue"
+                    type="text"
+                    inputmode="decimal"
+                    placeholder="0,00"
+                    required
+                  />
+                </span>
+              </label>
+              <label>
+                <span>Vencimento</span>
+                <input
+                  id="recurringDay"
+                  type="number"
+                  min="1"
+                  max="31"
+                  inputmode="numeric"
+                  placeholder="Dia"
+                  required
+                />
+              </label>
+              <label>
+                <span>Tipo</span>
+                <select id="recurringType">
+                  <option value="saida">Saída</option>
+                  <option value="entrada">Entrada</option>
+                </select>
+              </label>
+              <label>
+                <span>Categoria</span>
+                <select id="recurringCategory"></select>
+              </label>
+              <button class="primary-button" type="submit">Adicionar</button>
+            </form>
+          </article>
+
+          <div class="recurring-list" id="recurringList"></div>
+          <div class="empty-state surface" id="recurringEmpty">
+            <span>↻</span>
+            <h3>Nenhuma conta fixa cadastrada</h3>
+            <p>Adicione aluguel, salário, internet ou qualquer valor que se repete todo mês.</p>
+          </div>
         </section>
 
         <section
